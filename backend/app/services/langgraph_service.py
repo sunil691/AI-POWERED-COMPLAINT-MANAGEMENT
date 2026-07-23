@@ -19,6 +19,22 @@ REQUIRED_FIELDS_BY_SEVERITY = {
     "Minor": ["product_name", "complaint_description"],
 }
 
+FIELD_ALIASES = {
+    "batch_lot_number": ["batch_number", "batch_lot_number"],
+    "product_strength": ["dosage_strength", "product_strength"],
+    "complaint_source": ["originating_site", "complaint_source"],
+}
+
+
+def _get_field_value(fields: dict, field_name: str) -> object:
+    possible_keys = FIELD_ALIASES.get(field_name, [field_name])
+    for key in possible_keys:
+        val = fields.get(key)
+        if val:
+            return val
+    return None
+
+
 
 class ComplaintGraphState(TypedDict, total=False):
     """State passed between complaint copilot workflow nodes."""
@@ -73,16 +89,31 @@ def extract_information(state: ComplaintGraphState) -> dict:
 
 
 def merge_updated_fields(state: ComplaintGraphState) -> dict:
-    merged = dict(state.get("current_form_state", {}))
-    merged.update(state.get("updated_fields", {}))
-    return {"current_form_state": merged, "updated_fields": state.get("updated_fields", {})}
+    old_complaint = dict(state.get("current_form_state", {}))
+    new_fields = state.get("updated_fields", {})
+    if not isinstance(new_fields, dict):
+        new_fields = {}
+
+    merged = old_complaint.copy()
+    patch_fields = {}
+
+    for field, new_val in new_fields.items():
+        if new_val is not None and new_val != "":
+            old_val = _get_field_value(old_complaint, field)
+            if new_val != old_val:
+                merged[field] = new_val
+                patch_fields[field] = new_val
+                for alias in FIELD_ALIASES.get(field, []):
+                    merged[alias] = new_val
+
+    return {"current_form_state": merged, "updated_fields": patch_fields}
 
 
 def completeness_check(state: ComplaintGraphState) -> dict:
     fields = state.get("current_form_state", {})
     severity = fields.get("severity") or state.get("risk_assessment", {}).get("severity", "Critical")
     required = REQUIRED_FIELDS_BY_SEVERITY.get(severity, REQUIRED_FIELDS_BY_SEVERITY["Critical"])
-    missing = [field for field in required if not fields.get(field)]
+    missing = [field for field in required if not _get_field_value(fields, field)]
     return {"completeness": {"is_complete": not missing, "missing_fields": missing}}
 
 
@@ -147,6 +178,7 @@ def run_complaint_graph(
         "complaint_id": complaint_id if complaint_id is not None else f"temp-{uuid4().hex[:8]}",
         "reply_message": result.get("reply_message", "Complaint information updated."),
         "updated_fields": result.get("updated_fields", {}),
+        "current_form_state": result.get("current_form_state", {}),
         "risk_assessment": result.get("risk_assessment", {}),
         "completeness": result.get("completeness", {"is_complete": False, "missing_fields": []}),
         "potential_duplicates": result.get("potential_duplicates", []),

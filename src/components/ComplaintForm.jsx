@@ -18,8 +18,8 @@ const sections = [
       ["dosage_strength", "Dosage strength", "e.g. 500 mg"],
       ["dosage_unit", "Dosage unit", "e.g. capsules"],
       ["batch_number", "Batch / lot number", "e.g. AMX240602"],
-      ["manufacturing_date", "Manufacturing date", "", "date"],
-      ["expiry_date", "Expiry date", "", "date"],
+      ["manufacturing_date", "Manufacturing date", "e.g. March 2026"],
+      ["expiry_date", "Expiry date", "e.g. February 2028"],
     ],
   },
   {

@@ -11,6 +11,7 @@ class ComplaintFields(BaseModel):
 	"""Shared complaint fields used by create, update, and response schemas."""
 
 	customer_name: str | None = Field(default=None, max_length=255)
+	customer_location: str | None = Field(default=None, max_length=255)
 	product_name: str | None = Field(default=None, max_length=255)
 	dosage_strength: str | None = Field(default=None, max_length=100)
 	dosage_unit: str | None = Field(default=None, max_length=50)
@@ -20,11 +21,13 @@ class ComplaintFields(BaseModel):
 	expiry_date: str | None = Field(default=None, max_length=50)
 	product_type: str | None = Field(default=None, max_length=10)
 	originating_site: str | None = Field(default=None, max_length=255)
+	manufacturing_site: str | None = Field(default=None, max_length=255)
 	impacted_material: str | None = Field(default=None, max_length=255)
 	complaint_category: str | None = Field(default=None, max_length=100)
 	complaint_description: str | None = None
 	structured_summary: str | None = None
 	severity: str | None = Field(default=None, max_length=50)
+	likely_root_cause: str | None = None
 	risk_assessment: str | None = None
 	suggested_next_action: str | None = None
 	capa_priority: str | None = Field(default=None, max_length=50)
@@ -43,6 +46,7 @@ class ComplaintUpdate(BaseModel):
 	model_config = ConfigDict(extra="forbid")
 
 	customer_name: str | None = Field(default=None, max_length=255)
+	customer_location: str | None = Field(default=None, max_length=255)
 	product_name: str | None = Field(default=None, max_length=255)
 	dosage_strength: str | None = Field(default=None, max_length=100)
 	dosage_unit: str | None = Field(default=None, max_length=50)
@@ -52,11 +56,13 @@ class ComplaintUpdate(BaseModel):
 	expiry_date: str | None = Field(default=None, max_length=50)
 	product_type: str | None = Field(default=None, max_length=10)
 	originating_site: str | None = Field(default=None, max_length=255)
+	manufacturing_site: str | None = Field(default=None, max_length=255)
 	impacted_material: str | None = Field(default=None, max_length=255)
 	complaint_category: str | None = Field(default=None, max_length=100)
 	complaint_description: str | None = None
 	structured_summary: str | None = None
 	severity: str | None = Field(default=None, max_length=50)
+	likely_root_cause: str | None = None
 	risk_assessment: str | dict[str, object] | None = None
 	suggested_next_action: str | None = None
 	capa_priority: str | None = Field(default=None, max_length=50)

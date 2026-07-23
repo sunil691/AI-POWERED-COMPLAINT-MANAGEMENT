@@ -41,10 +41,10 @@ export function uploadComplaintPdf(file, complaintId) {
 
 export function commitComplaint(complaintId, fields, riskAssessment) {
   const backendFields = [
-    "customer_name", "product_name", "dosage_strength", "dosage_unit", "batch_number",
+    "customer_name", "customer_location", "product_name", "dosage_strength", "dosage_unit", "batch_number",
     "affected_quantity", "manufacturing_date", "expiry_date", "product_type",
-    "originating_site", "impacted_material", "complaint_category",
-    "complaint_description", "structured_summary", "severity",
+    "originating_site", "manufacturing_site", "impacted_material", "complaint_category",
+    "complaint_description", "structured_summary", "severity", "likely_root_cause",
     "suggested_next_action", "capa_priority", "corrective_action",
     "preventive_action",
   ].reduce((payload, field) => ({ ...payload, [field]: fields[field] }), {});

@@ -60,6 +60,9 @@ async def upload_pdf(
 		ChatService._form_state(complaint),
 		database,
 	)
+	if complaint is not None and "current_form_state" in result:
+		ChatService._update_complaint_model(complaint, result["current_form_state"], result.get("risk_assessment"))
+		database.commit()
 	database.add(
 		ChatMessage(
 			complaint_id=complaint_id,
