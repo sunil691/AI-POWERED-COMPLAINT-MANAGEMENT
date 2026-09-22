@@ -68,7 +68,7 @@ def commit_complaint(
 	return service.commit_complaint(complaint_id, payload)
 
 
-@router.delete("/{complaint_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{complaint_id}", status_code=status.HTTP_204_NO_CONTENT,response_model=None)
 def delete_complaint(
 	complaint_id: int,
 	service: ComplaintService = Depends(get_complaint_service),

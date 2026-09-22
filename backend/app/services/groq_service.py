@@ -171,7 +171,7 @@ class GroqService:
 
     def assess_risk(self, fields: dict) -> dict:
         """Assess complaint risk using the reasoning-oriented Groq model."""
-        return self._complete(RISK_ASSESSMENT_SYSTEM_PROMPT, fields, "llama-3.3-70b-versatile")
+        return self._complete(RISK_ASSESSMENT_SYSTEM_PROMPT, fields, self.settings.model_name)
 
     def _complete(self, system_prompt: str, user_payload: Any, model: str) -> dict:
         if self._client is None:
